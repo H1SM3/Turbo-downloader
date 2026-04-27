@@ -5,7 +5,6 @@ const app = express();
 
 app.use(cors());
 
-// Вот этого куска нам не хватало, чтобы не было "Not Found"
 app.get('/', (req, res) => {
     res.send('Turbo Server is Online! 🚀');
 });
@@ -15,10 +14,14 @@ app.get('/download', async (req, res) => {
     if (!url) return res.status(400).send('URL missing');
 
     try {
+        // Эмуляция реального браузера
         const options = {
             requestOptions: {
                 headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                    'Accept': '*/*',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive'
                 }
             }
         };
@@ -34,11 +37,11 @@ app.get('/download', async (req, res) => {
             ytdl(url, { ...options, filter: 'audioandvideo', quality: 'highest' }).pipe(res);
         }
     } catch (e) {
-        console.error(e);
-        res.status(500).send('YouTube блокирует IP сервера. Попробуй еще раз через минуту.');
+        console.error('Ошибка:', e.message);
+        res.status(500).send('Бро, YouTube всё ещё блокирует. Попробуй другое видео или подожди 5 минут.');
     }
 });
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
-
+ 
