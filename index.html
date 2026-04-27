@@ -8,22 +8,14 @@
     <style>
         :root { --primary: #00f2fe; --bg: #050505; }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Roboto', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-        
-        /* Тот самый неоновый фон */
         .bg-glow { position: absolute; width: 400px; height: 400px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.15; animation: move 8s infinite alternate; }
         @keyframes move { from { transform: translate(-30%, -30%); } to { transform: translate(30%, 30%); } }
-
-        .container { background: #111; padding: 40px; border-radius: 30px; box-shadow: 0 0 50px rgba(0, 242, 254, 0.15); text-align: center; width: 85%; max-width: 380px; border: 1px solid #222; }
-        
+        .container { background: #111; padding: 40px; border-radius: 30px; box-shadow: 0 0 50px rgba(0, 242, 254, 0.15); text-align: center; width: 85%; max-width: 380px; border: 1px solid #222; position: relative; }
         h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 25px; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
-        
-        input { width: 100%; padding: 15px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; color: white; font-size: 14px; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 20px; }
+        input { width: 100%; padding: 15px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; color: white; font-size: 14px; outline: none; box-sizing: border-box; margin-bottom: 20px; }
         input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 254, 0.2); }
-
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: 'Orbitron', sans-serif; transition: 0.3s; text-transform: uppercase; font-size: 13px; background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
-        .btn:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5); }
-        .btn:active { transform: translateY(0); }
-
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: 'Orbitron', sans-serif; transition: 0.3s; text-transform: uppercase; font-size: 13px; background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5); }
         .status { margin-top: 25px; font-size: 0.7rem; color: #444; letter-spacing: 1px; text-transform: uppercase; }
     </style>
 </head>
@@ -31,31 +23,32 @@
     <div class="bg-glow"></div>
     <div class="container">
         <h1>TURBO DL</h1>
-        <input type="text" id="videoUrl" placeholder="Вставь ссылку с YouTube...">
-        <button class="btn" onclick="startDownload()">ПОЛУЧИТЬ ФАЙЛ</button>
+        <input type="text" id="ytUrl" placeholder="Вставь ссылку здесь...">
+        <button class="btn" onclick="downloadNow()">СКАЧАТЬ MP3 / MP4</button>
         <div class="status">DESIGNED FOR GUSEIN</div>
     </div>
 
     <script>
-        function startDownload() {
-            const url = document.getElementById('videoUrl').value;
-            if (!url) return alert('Ссылку закинь, бро!');
+        function downloadNow() {
+            const input = document.getElementById('ytUrl').value;
+            if (!input) return alert('Ссылку закинь, бро!');
 
+            // Магия: превращаем обычную ссылку в ссылку на скачивание
+            // Мы используем надежный сервис-прокладку y2mate через быстрый редирект
             try {
                 let id = "";
-                // Вытаскиваем ID видео из любой ссылки
-                if (url.includes('v=')) { id = url.split('v=')[1].split('&')[0]; }
-                else if (url.includes('be/')) { id = url.split('be/')[1].split('?')[0]; }
-                else if (url.includes('shorts/')) { id = url.split('shorts/')[1].split('?')[0]; }
-                else { id = url; }
+                if (input.includes('v=')) id = input.split('v=')[1].split('&')[0];
+                else if (input.includes('be/')) id = input.split('be/')[1].split('?')[0];
+                else if (input.includes('shorts/')) id = input.split('shorts/')[1].split('?')[0];
+                else id = input;
 
-                if (id.length < 5) return alert('Кривая ссылка, проверь еще раз');
+                if (id.length < 5) return alert('Кривая ссылка!');
 
-                // Самый надежный обход: открываем проверенный сервис сразу на скачивании этого ID
-                const dlUrl = `https://www.y2mate.com/youtube/${id}`;
-                window.open(dlUrl, '_blank');
+                // Открываем стабильный загрузчик прямо на видео
+                const finalLink = `https://www.y2mate.com/youtube/${id}`;
+                window.open(finalLink, '_blank');
             } catch (e) {
-                alert('Что-то пошло не так, проверь ссылку!');
+                alert('Ошибка! Проверь ссылку.');
             }
         }
     </script>
