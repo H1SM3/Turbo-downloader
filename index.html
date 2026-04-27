@@ -6,68 +6,57 @@
     <title>TURBO DL | ГУСЕЙН EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00f2fe; --bg: #0a0a0a; }
+        :root { --primary: #00f2fe; --bg: #050505; }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Roboto', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        
+        /* Тот самый неоновый фон */
         .bg-glow { position: absolute; width: 400px; height: 400px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.15; animation: move 8s infinite alternate; }
         @keyframes move { from { transform: translate(-30%, -30%); } to { transform: translate(30%, 30%); } }
-        .container { background: #111; padding: 40px; border-radius: 30px; box-shadow: 0 0 40px rgba(0,0,0,0.8); text-align: center; width: 85%; max-width: 380px; border: 1px solid #222; }
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 25px; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .container { background: #111; padding: 40px; border-radius: 30px; box-shadow: 0 0 50px rgba(0, 242, 254, 0.15); text-align: center; width: 85%; max-width: 380px; border: 1px solid #222; }
+        
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 25px; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+        
         input { width: 100%; padding: 15px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; color: white; font-size: 14px; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 20px; }
-        input:focus { border-color: var(--primary); }
-        .buttons { display: flex; gap: 10px; }
-        .btn { flex: 1; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: 'Orbitron', sans-serif; transition: 0.3s; text-transform: uppercase; font-size: 12px; }
-        .btn-mp3 { background: var(--primary); color: #000; }
-        .btn-mp4 { background: #222; color: #fff; border: 1px solid #444; }
-        .btn:hover { transform: scale(1.05); filter: brightness(1.2); }
-        .status { margin-top: 20px; font-size: 0.8rem; color: #666; }
-        .loader { display: none; width: 20px; height: 20px; border: 2px solid #333; border-top: 2px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 10px auto; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 254, 0.2); }
+
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: 'Orbitron', sans-serif; transition: 0.3s; text-transform: uppercase; font-size: 13px; background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
+        .btn:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5); }
+        .btn:active { transform: translateY(0); }
+
+        .status { margin-top: 25px; font-size: 0.7rem; color: #444; letter-spacing: 1px; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
     <div class="container">
         <h1>TURBO DL</h1>
-        <input type="text" id="vUrl" placeholder="Вставь ссылку сюда...">
-        <div class="buttons">
-            <button class="btn btn-mp3" onclick="dl('audio')">AUDIO</button>
-            <button class="btn btn-mp4" onclick="dl('720')">VIDEO</button>
-        </div>
-        <div class="loader" id="ldr"></div>
-        <div id="st" class="status">DESIGNED FOR GUSEIN</div>
+        <input type="text" id="videoUrl" placeholder="Вставь ссылку с YouTube...">
+        <button class="btn" onclick="startDownload()">ПОЛУЧИТЬ ФАЙЛ</button>
+        <div class="status">DESIGNED FOR GUSEIN</div>
     </div>
 
     <script>
-        async function dl(mode) {
-            const url = document.getElementById('vUrl').value;
-            const st = document.getElementById('st');
-            const ldr = document.getElementById('ldr');
-            if(!url) return alert('Ссылку закинь!');
+        function startDownload() {
+            const url = document.getElementById('videoUrl').value;
+            if (!url) return alert('Ссылку закинь, бро!');
 
-            st.innerText = "Взламываю систему...";
-            ldr.style.display = "block";
+            try {
+                let id = "";
+                // Вытаскиваем ID видео из любой ссылки
+                if (url.includes('v=')) { id = url.split('v=')[1].split('&')[0]; }
+                else if (url.includes('be/')) { id = url.split('be/')[1].split('?')[0]; }
+                else if (url.includes('shorts/')) { id = url.split('shorts/')[1].split('?')[0]; }
+                else { id = url; }
 
-            // Список серверов на случай сбоя
-            const apis = ['https://api.cobalt.tools/api/json', 'https://cobalt.shizuku.io/api/json'];
-            
-            for(let api of apis) {
-                try {
-                    const res = await fetch(api, {
-                        method: 'POST',
-                        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-                        body: JSON.stringify({ url: url, downloadMode: (mode === 'audio' ? 'audio' : 'video'), videoQuality: mode })
-                    });
-                    const data = await res.json();
-                    if(data.url) {
-                        st.innerText = "✅ Нашел! Качаю...";
-                        window.location.href = data.url;
-                        ldr.style.display = "none";
-                        return;
-                    }
-                } catch(e) { console.log("Сбой сервера, пробую другой..."); }
+                if (id.length < 5) return alert('Кривая ссылка, проверь еще раз');
+
+                // Самый надежный обход: открываем проверенный сервис сразу на скачивании этого ID
+                const dlUrl = `https://www.y2mate.com/youtube/${id}`;
+                window.open(dlUrl, '_blank');
+            } catch (e) {
+                alert('Что-то пошло не так, проверь ссылку!');
             }
-            st.innerText = "❌ YouTube заблокировал доступ. Попробуй позже.";
-            ldr.style.display = "none";
         }
     </script>
 </body>
