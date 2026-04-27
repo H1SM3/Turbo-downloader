@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo Downloader</title>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <style>
+        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        h1 { font-size: 2.5rem; margin-bottom: 20px; background: linear-gradient(to right, #22d3ee, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
+        .card { background: #1e293b; padding: 25px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); text-align: center; width: 90%; max-width: 400px; }
+        input { width: 90%; padding: 12px; border-radius: 10px; border: none; margin-bottom: 20px; outline: none; background: #334155; color: white; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; }
+        .btn { padding: 12px 25px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; flex: 1; }
+        .mp3 { background: #0891b2; }
+        .mp4 { background: #7c3aed; }
+        .btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <h1>Turbo Downloader</h1>
+    <div class="card">
+        <input id="urlInput" type="text" placeholder="Вставь ссылку на видео...">
+        <div class="btn-group">
+            <button class="btn mp3" onclick="download('mp3')">MP3 🎵</button>
+            <button class="btn mp4" onclick="download('mp4')">MP4 🎬</button>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = "https://Turbo-downloader-production.up.railway.app"; 
+
+        function download(format) {
+            const url = document.getElementById('urlInput').value;
+            if(!url) return alert('Бро, вставь ссылку!');
+            window.location.href = `${BACKEND_URL}/download?url=${url}&format=${format}`;
+        }
+    </script>
+</body>
+</html>
