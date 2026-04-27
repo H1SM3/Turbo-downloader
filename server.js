@@ -10,11 +10,11 @@ app.get('/download', async (req, res) => {
     if (!url) return res.status(400).send('URL missing');
 
     try {
-        // Настройки, чтобы YouTube нас не забанил
         const options = {
             requestOptions: {
                 headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                    'Accept-Language': 'en-US,en;q=0.9',
                 }
             }
         };
@@ -24,16 +24,16 @@ app.get('/download', async (req, res) => {
 
         if (format === 'mp3') {
             res.header('Content-Disposition', `attachment; filename="${title}.mp3"`);
-            ytdl(url, { ...options, format: 'mp3', filter: 'audioonly' }).pipe(res);
+            ytdl(url, { ...options, filter: 'audioonly', quality: 'highestaudio' }).pipe(res);
         } else {
             res.header('Content-Disposition', `attachment; filename="${title}.mp4"`);
-            ytdl(url, { ...options, quality: 'highestvideo', filter: 'audioandvideo' }).pipe(res);
+            ytdl(url, { ...options, filter: 'audioandvideo', quality: 'highest' }).pipe(res);
         }
     } catch (e) {
         console.error(e);
-        res.status(500).send('Ошибка при скачивании (YouTube блокирует запрос)');
+        res.status(500).send('Бро, YouTube вредничает. Попробуй еще раз через минуту или другую ссылку.');
     }
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Turbo Server active on ${PORT}`));
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
