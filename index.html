@@ -3,183 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TURBO DL | Гусейн Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+    <title>TURBO DL | ГУСЕЙН EDITION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #00f2fe;
-            --secondary: #4facfe;
-            --bg: #050505;
-            --card-bg: #111111;
-        }
-
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: white;
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Анимированный фон */
-        .bg-glow {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: var(--primary);
-            filter: blur(150px);
-            border-radius: 50%;
-            z-index: -1;
-            opacity: 0.2;
-            animation: move 10s infinite alternate;
-        }
-
-        @keyframes move {
-            from { transform: translate(-50%, -50%); }
-            to { transform: translate(50%, 50%); }
-        }
-
-        .container {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 0 50px rgba(0, 242, 254, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            margin-bottom: 30px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 15px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
-            box-sizing: border-box;
-            margin-bottom: 25px;
-        }
-
-        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); }
-
-        .buttons { display: flex; gap: 15px; }
-
-        .btn {
-            flex: 1;
-            padding: 15px;
-            border-radius: 15px;
-            border: none;
-            cursor: pointer;
-            font-weight: 700;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-mp3 { background: linear-gradient(45deg, #4facfe, #00f2fe); color: #000; }
-        .btn-mp4 { background: #1a1a1a; color: #fff; border: 1px solid #333; }
-
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0, 242, 254, 0.4); }
-        .btn:active { transform: translateY(0); }
-
-        .status { margin-top: 20px; font-size: 0.9rem; color: #888; min-height: 20px; }
-
-        .loader {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #333;
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 10px auto;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        :root { --primary: #00f2fe; --bg: #0a0a0a; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Roboto', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .bg-glow { position: absolute; width: 400px; height: 400px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.15; animation: move 8s infinite alternate; }
+        @keyframes move { from { transform: translate(-30%, -30%); } to { transform: translate(30%, 30%); } }
+        .container { background: #111; padding: 40px; border-radius: 30px; box-shadow: 0 0 40px rgba(0,0,0,0.8); text-align: center; width: 85%; max-width: 380px; border: 1px solid #222; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 25px; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        input { width: 100%; padding: 15px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; color: white; font-size: 14px; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 20px; }
+        input:focus { border-color: var(--primary); }
+        .buttons { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: 'Orbitron', sans-serif; transition: 0.3s; text-transform: uppercase; font-size: 12px; }
+        .btn-mp3 { background: var(--primary); color: #000; }
+        .btn-mp4 { background: #222; color: #fff; border: 1px solid #444; }
+        .btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+        .status { margin-top: 20px; font-size: 0.8rem; color: #666; }
+        .loader { display: none; width: 20px; height: 20px; border: 2px solid #333; border-top: 2px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 10px auto; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
     <div class="container">
         <h1>TURBO DL</h1>
-        <input type="text" id="videoUrl" placeholder="Вставь ссылку здесь...">
-        
+        <input type="text" id="vUrl" placeholder="Вставь ссылку сюда...">
         <div class="buttons">
-            <button class="btn btn-mp3" onclick="startDownload('mp3')">AUDIO</button>
-            <button class="btn btn-mp4" onclick="startDownload('mp4')">VIDEO</button>
+            <button class="btn btn-mp3" onclick="dl('audio')">AUDIO</button>
+            <button class="btn btn-mp4" onclick="dl('720')">VIDEO</button>
         </div>
-
-        <div class="loader" id="loader"></div>
-        <div class="status" id="status">Готов к взлету 🚀</div>
-        
-        <p style="margin-top: 30px; font-size: 0.7rem; color: #444; letter-spacing: 1px;">DESIGNED FOR GUSEIN</p>
+        <div class="loader" id="ldr"></div>
+        <div id="st" class="status">DESIGNED FOR GUSEIN</div>
     </div>
 
     <script>
-        async function startDownload(type) {
-            const url = document.getElementById('videoUrl').value;
-            const status = document.getElementById('status');
-            const loader = document.getElementById('loader');
+        async function dl(mode) {
+            const url = document.getElementById('vUrl').value;
+            const st = document.getElementById('st');
+            const ldr = document.getElementById('ldr');
+            if(!url) return alert('Ссылку закинь!');
 
-            if (!url) {
-                status.innerText = "❌ Ссылку закинь, бро!";
-                return;
+            st.innerText = "Взламываю систему...";
+            ldr.style.display = "block";
+
+            // Список серверов на случай сбоя
+            const apis = ['https://api.cobalt.tools/api/json', 'https://cobalt.shizuku.io/api/json'];
+            
+            for(let api of apis) {
+                try {
+                    const res = await fetch(api, {
+                        method: 'POST',
+                        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+                        body: JSON.stringify({ url: url, downloadMode: (mode === 'audio' ? 'audio' : 'video'), videoQuality: mode })
+                    });
+                    const data = await res.json();
+                    if(data.url) {
+                        st.innerText = "✅ Нашел! Качаю...";
+                        window.location.href = data.url;
+                        ldr.style.display = "none";
+                        return;
+                    }
+                } catch(e) { console.log("Сбой сервера, пробую другой..."); }
             }
-
-            status.innerText = "Связываюсь со спутником...";
-            loader.style.display = "block";
-
-            try {
-                // Используем мощный публичный API Cobalt
-                const response = await fetch('https://api.cobalt.tools/api/json', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        url: url,
-                        downloadMode: type === 'mp3' ? 'audio' : 'video',
-                        youtubeVideoQuality: '720',
-                        audioFormat: 'mp3'
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.url) {
-                    status.innerText = "✅ Нашел! Загружаю...";
-                    window.location.href = data.url; // Прямое скачивание
-                } else {
-                    status.innerText = "❌ YouTube вредничает, попробуй позже";
-                }
-            } catch (error) {
-                status.innerText = "❌ Ошибка связи. Попробуй еще раз.";
-                console.error(error);
-            } finally {
-                loader.style.display = "none";
-            }
+            st.innerText = "❌ YouTube заблокировал доступ. Попробуй позже.";
+            ldr.style.display = "none";
         }
     </script>
 </body>
