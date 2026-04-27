@@ -1,5 +1,5 @@
 const express = require('express');
-const ytDlp = require('yt-dlp-exec');
+const ytdl = require('ytdl-core');
 const cors = require('cors');
 const app = express();
 
@@ -9,19 +9,23 @@ app.get('/download', async (req, res) => {
     const { url, format } = req.query;
     if (!url) return res.status(400).send('URL missing');
 
-    const options = format === 'mp3' 
-        ? { extractAudio: true, audioFormat: 'mp3', output: '-' } 
-        : { format: 'best', output: '-' };
-
-    res.header('Content-Disposition', `attachment; filename="TurboFile.${format}"`);
-
     try {
-        const subprocess = ytDlp.exec(url, { ...options, stdio: ['ignore', 'pipe', 'ignore'] });
-        subprocess.stdout.pipe(res);
+        const info = await ytdl.getInfo(url);
+        const title = info.videoDetails.title.replace(/[^\w\s]/gi, '');
+
+        if (format === 'mp3') {
+            res.header('Content-Disposition', `attachment; filename="${title}.mp3"`);
+            ytdl(url, { format: 'mp3', filter: 'audioonly' }).pipe(res);
+        } else {
+            res.header('Content-Disposition', `attachment; filename="${title}.mp4"`);
+            ytdl(url, { quality: 'highestvideo', filter: 'audioandvideo' }).pipe(res);
+        }
     } catch (e) {
-        res.status(500).send('Error');
+        console.error(e);
+        res.status(500).send('Ошибка при скачивании');
     }
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Turbo Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Turbo Server active on ${PORT}`));
+ 
