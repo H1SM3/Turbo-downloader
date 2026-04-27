@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turbo Downloader Pro</title>
+    <title>Turbo Downloader 🚀</title>
+
+    <link rel="icon" href="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f680.png">
+    <meta property="og:title" content="Turbo Downloader 🚀">
+    <meta property="og:description" content="Качай музыку и видео в один клик! Специально для Гусейна.">
+    <meta property="og:image" content="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f680.png">
+    <meta name="theme-color" content="#0f172a">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
     <style>
         :root {
             --primary: #00f2fe;
@@ -27,9 +35,9 @@
             overflow: hidden;
         }
 
-        /* Анимированный фон (пузыри) */
+        /* Анимированный фон */
         .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; }
-        .circles li { position: absolute; list-style: none; display: block; background: rgba(255, 255, 255, 0.05); animate: animate 25s linear infinite; bottom: -150px; }
+        .circles li { position: absolute; list-style: none; display: block; background: rgba(255, 255, 255, 0.05); animation: animate 25s linear infinite; bottom: -150px; }
         .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
         .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
         @keyframes animate { 0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; } 100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; } }
@@ -95,11 +103,11 @@
         .mp3 { background: linear-gradient(45deg, #00f2fe, #4facfe); box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4); }
         .mp4 { background: linear-gradient(45deg, #7c3aed, #c084fc); box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
 
-        .btn:hover { transform: translateY(-5px) scale(1.02); brightness: 1.1; }
+        .btn:hover { transform: translateY(-5px) scale(1.02); filter: brightness(1.1); }
         .btn:active { transform: scale(0.95); }
 
         .footer { margin-top: 30px; font-size: 0.8rem; color: #475569; }
-        .badge { background: #334155; padding: 5px 12px; border-radius: 20px; color: var(--primary); font-weight: bold; }
+        .badge { background: #334155; padding: 5px 12px; border-radius: 20px; color: var(--primary); font-weight: bold; display: inline-block; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -114,7 +122,7 @@
         <p>Мгновенная загрузка музыки и видео</p>
         
         <div class="input-group">
-            <input id="urlInput" type="text" placeholder="Вставь ссылку здесь...">
+            <input id="urlInput" type="text" placeholder="Вставь ссылку на YouTube...">
         </div>
 
         <div class="btn-container">
@@ -127,12 +135,12 @@
         </div>
 
         <div class="footer">
-            Создано специально для Гусейна 🚀
+            Сделано для Гусейна 🚀
         </div>
     </div>
 
     <script>
-        // ССЫЛКА НА ТВОЙ БЭКЕНД (RENDER)
+        // Твоя ссылка на Render
         const BACKEND_URL = "https://turbo-downloader.onrender.com"; 
 
         function download(format) {
@@ -144,15 +152,8 @@
                 return;
             }
             
-            // Анимация кнопки при нажатии
-            const btn = event.currentTarget;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Жди...';
-            
+            // Открываем загрузку
             window.open(`${BACKEND_URL}/download?url=${encodeURIComponent(url)}&format=${format}`, '_blank');
-            
-            setTimeout(() => {
-                btn.innerHTML = format === 'mp3' ? '<i class="fas fa-music"></i> MP3' : '<i class="fas fa-video"></i> MP4';
-            }, 3000);
         }
     </script>
 </body>
