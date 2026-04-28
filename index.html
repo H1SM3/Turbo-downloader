@@ -10,73 +10,55 @@
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         .bg-glow { position: absolute; width: 450px; height: 450px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.1; animation: move 10s infinite alternate; }
         @keyframes move { from { transform: translate(-25%, -25%); } to { transform: translate(25%, 25%); } }
-        .card { background: #111; padding: 40px; border-radius: 30px; text-align: center; width: 85%; max-width: 360px; border: 1px solid #222; box-shadow: 0 0 50px rgba(0,242,254,0.1); }
-        h1 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 1.8rem; margin-bottom: 25px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,242,254,0.5); }
-        input { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .card { background: #111; padding: 40px; border-radius: 30px; text-align: center; width: 85%; max-width: 360px; border: 1px solid #222; box-shadow: 0 0 50px rgba(0,242,254,0.15); }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 25px; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+        input { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: white; font-size: 14px; outline: none; box-sizing: border-box; margin-bottom: 20px; transition: 0.3s; }
         input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 254, 0.2); }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; background: var(--primary); color: black; font-family: 'Orbitron', sans-serif; transition: 0.3s; text-transform: uppercase; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0, 242, 254, 0.4); }
-        .loader { display: none; width: 25px; height: 25px; border: 3px solid #222; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 15px auto; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .status { font-size: 0.7rem; color: #444; margin-top: 25px; letter-spacing: 1px; }
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 13px; background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); transition: 0.3s; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5); }
+        .status { margin-top: 25px; font-size: 0.7rem; color: #444; letter-spacing: 1px; }
+        iframe { display: none; }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
     <div class="card">
         <h1>TURBO DL</h1>
-        <input type="text" id="vUrl" placeholder="Вставь ссылку здесь...">
-        <button id="mainBtn" class="btn" onclick="startDownload()">СКАЧАТЬ НАПРЯМУЮ</button>
-        <div class="loader" id="ldr"></div>
-        <div id="st" class="status">DESIGNED FOR GUSEIN</div>
+        <input type="text" id="url" placeholder="Вставь ссылку сюда...">
+        <button class="btn" onclick="start()">СКАЧАТЬ MP3</button>
+        <div id="msg" class="status">DESIGNED FOR GUSEIN</div>
     </div>
 
+    <iframe id="dl_frame"></iframe>
+
     <script>
-        async function startDownload() {
-            const url = document.getElementById('vUrl').value;
-            const st = document.getElementById('st');
-            const ldr = document.getElementById('ldr');
-            const btn = document.getElementById('mainBtn');
+        function start() {
+            const val = document.getElementById('url').value;
+            const msg = document.getElementById('msg');
+            if(!val) return alert('Ссылку закинь!');
 
-            if(!url) return alert('Ссылку закинь!');
+            msg.innerText = "Подготавливаю поток...";
+            
+            try {
+                let id = "";
+                if(val.includes('v=')) id = val.split('v=')[1].split('&')[0];
+                else if(val.includes('be/')) id = val.split('be/')[1].split('?')[0];
+                else id = val;
 
-            // Список рабочих API зеркал (мы пробуем их по очереди)
-            const mirrors = [
-                'https://api.cobalt.tools/api/json',
-                'https://cobalt.shizuku.io/api/json',
-                'https://cobalt-api.kwiateusz.xyz/api/json'
-            ];
+                // Используем мощный API Loader.to для прямого скачивания в MP3
+                const dlUrl = `https://loader.to/api/button/?url=https://www.youtube.com/watch?v=${id}&f=mp3`;
+                
+                // Вместо того чтобы перекидывать, открываем маленькое окно только для загрузки
+                const win = window.open(dlUrl, '_blank', 'width=1,height=1,left=10000,top=10000');
+                
+                msg.innerText = "Загрузка началась напрямую!";
+                
+                // Закрываем невидимое окно через 5 секунд
+                setTimeout(() => { if(win) win.close(); }, 5000);
 
-            st.innerText = "Подключаюсь через шифрованный канал...";
-            ldr.style.display = "block";
-            btn.disabled = true;
-
-            for (let mirror of mirrors) {
-                try {
-                    const response = await fetch(mirror, {
-                        method: 'POST',
-                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ url: url, downloadMode: 'audio', audioFormat: 'mp3' })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.url) {
-                        st.innerText = "✅ Файл готов! Начинаю поток...";
-                        // Качаем прямо в этой же вкладке
-                        window.location.href = data.url;
-                        ldr.style.display = "none";
-                        btn.disabled = false;
-                        return; // Выходим из цикла, если всё ок
-                    }
-                } catch (e) {
-                    console.log("Зеркало не ответило, пробую следующее...");
-                }
+            } catch(e) {
+                msg.innerText = "Ошибка в ссылке!";
             }
-
-            st.innerText = "❌ YouTube заблокировал все узлы. Попробуй через 2 минуты.";
-            ldr.style.display = "none";
-            btn.disabled = false;
         }
     </script>
 </body>
