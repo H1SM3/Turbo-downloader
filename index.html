@@ -8,71 +8,75 @@
     <style>
         :root { --primary: #00f2fe; --bg: #050505; }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .bg-glow { position: absolute; width: 400px; height: 400px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.1; }
-        .card { background: #111; padding: 40px; border-radius: 30px; text-align: center; width: 85%; max-width: 360px; border: 1px solid #222; box-shadow: 0 0 50px rgba(0, 242, 254, 0.1); }
-        h1 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 1.8rem; margin-bottom: 25px; }
+        .bg-glow { position: absolute; width: 450px; height: 450px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.1; }
+        .card { background: #111; padding: 40px; border-radius: 30px; text-align: center; width: 85%; max-width: 360px; border: 1px solid #222; box-shadow: 0 0 50px rgba(0, 242, 254, 0.15); }
+        h1 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 1.8rem; margin-bottom: 25px; letter-spacing: 2px; }
         input { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; background: var(--primary); color: black; font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
-        .status { font-size: 0.7rem; color: #444; margin-top: 25px; }
-        #download-result { margin-top: 20px; display: none; }
-        .dl-link { color: var(--primary); text-decoration: none; font-weight: bold; border: 1px solid var(--primary); padding: 10px; border-radius: 10px; display: inline-block; width: 100%; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; background: var(--primary); color: black; font-family: 'Orbitron', sans-serif; text-transform: uppercase; transition: 0.3s; }
+        .btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+        .status { font-size: 0.7rem; color: #444; margin-top: 25px; text-transform: uppercase; }
+        #download-area { display: none; margin-top: 20px; animation: fade 0.5s ease; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        .dl-btn { background: none; border: 2px solid var(--primary); color: var(--primary); padding: 12px; border-radius: 12px; text-decoration: none; display: block; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
     <div class="card">
         <h1>TURBO DL</h1>
-        <input type="text" id="vUrl" placeholder="Вставь ссылку сюда...">
-        <button id="btn" class="btn" onclick="fetchVideo()">ПОЛУЧИТЬ ФАЙЛ</button>
-        <div id="download-result">
-            <a id="finalLink" href="#" class="dl-link" download>СКАЧАТЬ MP3 / MP4</a>
+        <input type="text" id="vUrl" placeholder="Вставь ссылку здесь...">
+        <button id="mainBtn" class="btn" onclick="getLink()">ПОЛУЧИТЬ ФАЙЛ</button>
+        
+        <div id="download-area">
+            <a id="fileLink" href="#" class="dl-btn" download>СКАЧАТЬ СЕЙЧАС</a>
         </div>
+        
         <div id="st" class="status">DESIGNED FOR GUSEIN</div>
     </div>
 
     <script>
-        async function fetchVideo() {
+        async function getLink() {
             const url = document.getElementById('vUrl').value;
             const st = document.getElementById('st');
-            const resDiv = document.getElementById('download-result');
-            const link = document.getElementById('finalLink');
-            const btn = document.getElementById('btn');
+            const btn = document.getElementById('mainBtn');
+            const area = document.getElementById('download-area');
+            const fileLink = document.getElementById('fileLink');
 
-            if(!url) return alert('Ссылку дай!');
+            if(!url) return alert('Ссылку закинь!');
 
-            st.innerText = "Связываюсь с сервером...";
+            // Вытаскиваем ID видео
+            let id = "";
+            try {
+                if(url.includes('v=')) id = url.split('v=')[1].split('&')[0];
+                else if(url.includes('be/')) id = url.split('be/')[1].split('?')[0];
+                else id = url;
+            } catch(e) { return alert('Кривая ссылка!'); }
+
+            st.innerText = "Взламываю систему...";
             btn.disabled = true;
 
-            try {
-                // Используем прокси-запрос к SaveFrom API
-                const response = await fetch(`https://worker.sf-helper.com/savefrom.php?url=${encodeURIComponent(url)}`, {
-                    method: 'GET'
-                });
-                
-                // Если этот метод не сработал (CORS), используем запасной план через другой открытый API
-                const altRes = await fetch('https://api.cobalt.tools/api/json', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ url: url, downloadMode: 'audio' })
-                });
-                
-                const data = await altRes.json();
-
-                if(data.url) {
-                    st.innerText = "Файл готов!";
-                    link.href = data.url;
-                    resDiv.style.display = "block";
-                    btn.style.display = "none";
-                } else {
-                    st.innerText = "YouTube заблочил запрос. Попробуй через VPN.";
-                }
-            } catch (e) {
-                st.innerText = "Сбой сети. Проверь интернет.";
-            } finally {
-                btn.disabled = false;
+            // Используем публичный инстанс Invidious (они не банят по IP так жестко)
+            const instances = ['inv.tux.rs', 'invidious.snopyta.org', 'yewtu.be'];
+            
+            for(let host of instances) {
+                try {
+                    const res = await fetch(`https://${host}/api/v1/videos/${id}`);
+                    const data = await res.json();
+                    
+                    if(data.formatStreams && data.formatStreams.length > 0) {
+                        // Берем самую первую прямую ссылку на видео/аудио поток
+                        fileLink.href = data.formatStreams[0].url;
+                        st.innerText = "✅ Файл готов!";
+                        area.style.display = "block";
+                        btn.style.display = "none";
+                        return;
+                    }
+                } catch(e) { console.log(`Хост ${host} не ответил`); }
             }
+
+            st.innerText = "❌ Ошибка сети. Включи VPN или попробуй позже.";
+            btn.disabled = false;
         }
     </script>
 </body>
 </html>
- 
