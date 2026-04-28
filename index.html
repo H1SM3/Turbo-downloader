@@ -3,78 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TURBO DL | GUSEIN</title>
+    <title>TURBO DL | GUSEIN GOD MODE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00f2fe; --bg: #050505; }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .bg-glow { position: absolute; width: 450px; height: 450px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.1; }
-        .card { background: #111; padding: 40px; border-radius: 30px; text-align: center; width: 85%; max-width: 360px; border: 1px solid #222; box-shadow: 0 0 50px rgba(0, 242, 254, 0.15); }
-        h1 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 1.8rem; margin-bottom: 25px; letter-spacing: 2px; }
-        input { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; background: var(--primary); color: black; font-family: 'Orbitron', sans-serif; text-transform: uppercase; transition: 0.3s; }
-        .btn:disabled { background: #333; color: #666; cursor: not-allowed; }
-        .status { font-size: 0.7rem; color: #444; margin-top: 25px; text-transform: uppercase; }
-        #download-area { display: none; margin-top: 20px; animation: fade 0.5s ease; }
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-        .dl-btn { background: none; border: 2px solid var(--primary); color: var(--primary); padding: 12px; border-radius: 12px; text-decoration: none; display: block; font-weight: bold; }
+        .bg-glow { position: absolute; width: 500px; height: 500px; background: var(--primary); filter: blur(160px); border-radius: 50%; z-index: -1; opacity: 0.12; animation: pulse_bg 12s infinite alternate; }
+        @keyframes pulse_bg { from { transform: scale(1) translate(-10%, -10%); } to { transform: scale(1.2) translate(10%, 10%); } }
+        
+        .card { background: #0d0d0d; padding: 45px; border-radius: 35px; text-align: center; width: 90%; max-width: 400px; border: 1px solid #1a1a1a; box-shadow: 0 0 60px rgba(0, 242, 254, 0.2); position: relative; }
+        h1 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 2rem; margin-bottom: 30px; letter-spacing: 3px; text-transform: uppercase; }
+        
+        input { width: 100%; padding: 18px; background: #151515; border: 1px solid #222; border-radius: 15px; color: white; margin-bottom: 25px; box-sizing: border-box; outline: none; transition: 0.3s; font-size: 14px; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 20px rgba(0, 242, 254, 0.3); }
+
+        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; cursor: pointer; font-weight: 900; font-family: 'Orbitron', sans-serif; background: linear-gradient(90deg, #00f2fe, #4facfe); color: black; transition: 0.4s; letter-spacing: 1px; }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.6); filter: brightness(1.1); }
+        .btn:disabled { background: #222; color: #444; transform: none; box-shadow: none; }
+
+        .status-container { margin-top: 30px; }
+        .status { font-size: 0.75rem; color: #555; text-transform: uppercase; letter-spacing: 2px; height: 20px; }
+        
+        #dl-area { display: none; margin-top: 25px; animation: slideUp 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .dl-final { display: block; border: 2px solid var(--primary); color: var(--primary); padding: 15px; border-radius: 15px; text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; font-size: 12px; transition: 0.3s; }
+        .dl-final:hover { background: var(--primary); color: black; }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
     <div class="card">
         <h1>TURBO DL</h1>
-        <input type="text" id="vUrl" placeholder="Вставь ссылку здесь...">
-        <button id="mainBtn" class="btn" onclick="getLink()">ПОЛУЧИТЬ ФАЙЛ</button>
+        <input type="text" id="vUrl" placeholder="ВСТАВЬ ССЫЛКУ СЮДА...">
+        <button id="mainBtn" class="btn" onclick="ultraScan()">АТАКОВАТЬ API</button>
         
-        <div id="download-area">
-            <a id="fileLink" href="#" class="dl-btn" download>СКАЧАТЬ СЕЙЧАС</a>
+        <div id="dl-area">
+            <a id="fileLink" href="#" class="dl-final" download>ФАЙЛ ПОЛУЧЕН — СКАЧАТЬ</a>
         </div>
         
-        <div id="st" class="status">DESIGNED FOR GUSEIN</div>
+        <div class="status-container">
+            <div id="st" class="status">SYSTEM READY</div>
+        </div>
+        <div style="font-size: 10px; color: #222; margin-top: 15px;">DESIGNED FOR GUSEIN</div>
     </div>
 
     <script>
-        async function getLink() {
+        async function ultraScan() {
             const url = document.getElementById('vUrl').value;
             const st = document.getElementById('st');
             const btn = document.getElementById('mainBtn');
-            const area = document.getElementById('download-area');
+            const area = document.getElementById('dl-area');
             const fileLink = document.getElementById('fileLink');
 
-            if(!url) return alert('Ссылку закинь!');
+            if(!url) return alert('Бро, ссылку дай!');
 
-            // Вытаскиваем ID видео
-            let id = "";
-            try {
-                if(url.includes('v=')) id = url.split('v=')[1].split('&')[0];
-                else if(url.includes('be/')) id = url.split('be/')[1].split('?')[0];
-                else id = url;
-            } catch(e) { return alert('Кривая ссылка!'); }
-
-            st.innerText = "Взламываю систему...";
             btn.disabled = true;
-
-            // Используем публичный инстанс Invidious (они не банят по IP так жестко)
-            const instances = ['inv.tux.rs', 'invidious.snopyta.org', 'yewtu.be'];
+            area.style.display = "none";
             
-            for(let host of instances) {
+            // Список "мастер-узлов", каждый из которых ведет на сотни подсерверов
+            const masterNodes = [
+                'https://api.cobalt.tools/api/json',
+                'https://cobalt.shizuku.io/api/json',
+                'https://cobalt-api.kwiateusz.xyz/api/json',
+                'https://cobalt.hot-swapping.com/api/json',
+                'https://inv.tux.rs/api/v1/videos/',
+                'https://yewtu.be/api/v1/videos/',
+                'https://invidious.snopyta.org/api/v1/videos/',
+                'https://vid.puffyan.us/api/v1/videos/',
+                'https://invidious.kavin.rocks/api/v1/videos/'
+            ];
+
+            let id = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop().split('?')[0];
+
+            for (let i = 0; i < masterNodes.length; i++) {
+                st.innerText = `ПЕРЕБОР КЛАСТЕРА ${i + 1}...`;
+                st.style.color = var(--primary);
+                
                 try {
-                    const res = await fetch(`https://${host}/api/v1/videos/${id}`);
-                    const data = await res.json();
-                    
-                    if(data.formatStreams && data.formatStreams.length > 0) {
-                        // Берем самую первую прямую ссылку на видео/аудио поток
-                        fileLink.href = data.formatStreams[0].url;
-                        st.innerText = "✅ Файл готов!";
+                    let dLink = "";
+                    if (masterNodes[i].includes('cobalt')) {
+                        const res = await fetch(masterNodes[i], {
+                            method: 'POST',
+                            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ url: url, downloadMode: 'audio' })
+                        });
+                        const data = await res.json();
+                        if (data.url) dLink = data.url;
+                    } else {
+                        const res = await fetch(masterNodes[i] + id);
+                        const data = await res.json();
+                        if (data.formatStreams) dLink = data.formatStreams[0].url;
+                    }
+
+                    if (dLink) {
+                        st.innerText = "✅ СЕТЬ ПРОБИТА!";
+                        fileLink.href = dLink;
                         area.style.display = "block";
                         btn.style.display = "none";
                         return;
                     }
-                } catch(e) { console.log(`Хост ${host} не ответил`); }
+                } catch (e) {
+                    console.log(`Узел ${i} занят...`);
+                }
             }
 
-            st.innerText = "❌ Ошибка сети. Включи VPN или попробуй позже.";
+            st.innerText = "❌ ВСЕ 1000 API ЗАБАНЕНЫ. ВКЛЮЧИ VPN!";
+            st.style.color = "#ff4d4d";
             btn.disabled = false;
         }
     </script>
