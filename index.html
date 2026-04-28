@@ -4,60 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TURBO DL | GUSEIN</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00f2fe; --bg: #050505; }
-        body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Roboto', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+        
         .bg-glow { position: absolute; width: 450px; height: 450px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.1; animation: move 10s infinite alternate; }
         @keyframes move { from { transform: translate(-25%, -25%); } to { transform: translate(25%, 25%); } }
-        .card { background: #111; padding: 40px; border-radius: 30px; text-align: center; width: 85%; max-width: 360px; border: 1px solid #222; box-shadow: 0 0 50px rgba(0,242,254,0.15); }
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 25px; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
-        input { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: white; font-size: 14px; outline: none; box-sizing: border-box; margin-bottom: 20px; transition: 0.3s; }
+
+        .container { background: #111; padding: 40px; border-radius: 30px; box-shadow: 0 0 50px rgba(0, 242, 254, 0.15); text-align: center; width: 85%; max-width: 380px; border: 1px solid #222; }
+        
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin: 0 0 25px 0; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+        
+        input { width: 100%; padding: 15px; background: #1a1a1a; border: 2px solid #333; border-radius: 12px; color: white; font-size: 14px; outline: none; box-sizing: border-box; margin-bottom: 20px; transition: 0.3s; }
         input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 254, 0.2); }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 13px; background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); transition: 0.3s; }
+
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: 'Orbitron', sans-serif; transition: 0.3s; text-transform: uppercase; background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5); }
-        .status { margin-top: 25px; font-size: 0.7rem; color: #444; letter-spacing: 1px; }
-        iframe { display: none; }
+        .btn:active { transform: translateY(0); }
+
+        .status { margin-top: 25px; font-size: 0.7rem; color: #444; letter-spacing: 1px; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
-    <div class="card">
+
+    <div class="container">
         <h1>TURBO DL</h1>
-        <input type="text" id="url" placeholder="Вставь ссылку сюда...">
-        <button class="btn" onclick="start()">СКАЧАТЬ MP3</button>
-        <div id="msg" class="status">DESIGNED FOR GUSEIN</div>
+        <input type="text" id="videoUrl" placeholder="Вставь ссылку здесь...">
+        <button class="btn" onclick="startDownload()">СКАЧАТЬ НАПРЯМУЮ</button>
+        <div id="st" class="status">DESIGNED FOR GUSEIN</div>
     </div>
 
-    <iframe id="dl_frame"></iframe>
-
     <script>
-        function start() {
-            const val = document.getElementById('url').value;
-            const msg = document.getElementById('msg');
-            if(!val) return alert('Ссылку закинь!');
+        function startDownload() {
+            const url = document.getElementById('videoUrl').value;
+            const st = document.getElementById('st');
+            if(!url) return alert('Ссылку закинь, бро!');
 
-            msg.innerText = "Подготавливаю поток...";
+            st.innerText = "Подготовка файла...";
             
             try {
                 let id = "";
-                if(val.includes('v=')) id = val.split('v=')[1].split('&')[0];
-                else if(val.includes('be/')) id = val.split('be/')[1].split('?')[0];
-                else id = val;
+                if (url.includes('v=')) id = url.split('v=')[1].split('&')[0];
+                else if (url.includes('be/')) id = url.split('be/')[1].split('?')[0];
+                else if (url.includes('shorts/')) id = url.split('shorts/')[1].split('?')[0];
+                else id = url;
 
-                // Используем мощный API Loader.to для прямого скачивания в MP3
-                const dlUrl = `https://loader.to/api/button/?url=https://www.youtube.com/watch?v=${id}&f=mp3`;
-                
-                // Вместо того чтобы перекидывать, открываем маленькое окно только для загрузки
-                const win = window.open(dlUrl, '_blank', 'width=1,height=1,left=10000,top=10000');
-                
-                msg.innerText = "Загрузка началась напрямую!";
-                
-                // Закрываем невидимое окно через 5 секунд
-                setTimeout(() => { if(win) win.close(); }, 5000);
+                if (id.length < 5) {
+                    st.innerText = "Кривая ссылка!";
+                    return;
+                }
 
+                // Используем самый стабильный метод через редирект для обхода банов
+                const dlUrl = `https://www.y2mate.com/youtube/${id}`;
+                window.open(dlUrl, '_blank');
+                st.innerText = "Готово! Качай в новом окне.";
             } catch(e) {
-                msg.innerText = "Ошибка в ссылке!";
+                st.innerText = "Ошибка!";
             }
         }
     </script>
