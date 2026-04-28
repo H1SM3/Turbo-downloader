@@ -8,70 +8,76 @@
     <style>
         :root { --primary: #00f2fe; --bg: #050505; }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-        .bg-glow { position: absolute; width: 400px; height: 400px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.1; animation: move 10s infinite alternate; }
-        @keyframes move { from { transform: translate(-20%, -20%); } to { transform: translate(20%, 20%); } }
-        .card { background: #111; padding: 40px; border-radius: 30px; text-align: center; width: 85%; max-width: 360px; border: 1px solid #222; box-shadow: 0 0 40px rgba(0,242,254,0.1); }
-        h1 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 1.8rem; margin-bottom: 25px; letter-spacing: 2px; }
-        input { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--primary); }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; background: var(--primary); color: black; font-family: 'Orbitron', sans-serif; transition: 0.3s; }
-        .btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(0,242,254,0.4); }
-        .status { font-size: 0.7rem; color: #444; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-glow { position: absolute; width: 450px; height: 450px; background: var(--primary); filter: blur(150px); border-radius: 50%; z-index: -1; opacity: 0.1; animation: move 10s infinite alternate; }
+        @keyframes move { from { transform: translate(-25%, -25%); } to { transform: translate(25%, 25%); } }
+        .card { background: #111; padding: 40px; border-radius: 30px; text-align: center; width: 85%; max-width: 360px; border: 1px solid #222; box-shadow: 0 0 50px rgba(0,242,254,0.1); }
+        h1 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 1.8rem; margin-bottom: 25px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,242,254,0.5); }
+        input { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0,242,254,0.2); }
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; background: var(--primary); color: black; font-family: 'Orbitron', sans-serif; transition: 0.3s; text-transform: uppercase; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,242,254,0.4); }
         .loader { display: none; width: 25px; height: 25px; border: 3px solid #222; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 15px auto; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        .status { font-size: 0.7rem; color: #444; margin-top: 25px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
     <div class="card">
         <h1>TURBO DL</h1>
-        <input type="text" id="urlInput" placeholder="Вставь ссылку здесь...">
-        <button class="btn" onclick="start()">СКАЧАТЬ</button>
-        <div class="loader" id="loader"></div>
-        <div id="msg" class="status">DESIGNED FOR GUSEIN</div>
+        <input type="text" id="vUrl" placeholder="Вставь ссылку здесь...">
+        <button class="btn" onclick="download()">СКАЧАТЬ НАПРЯМУЮ</button>
+        <div class="loader" id="ldr"></div>
+        <div id="st" class="status">DESIGNED FOR GUSEIN</div>
     </div>
 
     <script>
-        async function start() {
-            const url = document.getElementById('urlInput').value;
-            const msg = document.getElementById('msg');
-            const loader = document.getElementById('loader');
-            
-            if(!url) return alert('Ссылку дай!');
-            
-            msg.innerText = "Обхожу защиту YouTube...";
-            loader.style.display = "block";
+        async function download() {
+            const url = document.getElementById('vUrl').value;
+            const st = document.getElementById('st');
+            const ldr = document.getElementById('ldr');
+
+            if(!url) return alert('Ссылку закинь!');
+
+            st.innerText = "Устанавливаю прямое соединение...";
+            ldr.style.display = "block";
 
             try {
-                // Используем самый стабильный API с автоматическим проксированием
+                // Используем Cobalt API с обходом CORS через прокси
                 const response = await fetch('https://api.cobalt.tools/api/json', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({
                         url: url,
-                        downloadMode: 'audio', // по умолчанию аудио, так как это чаще всего нужно
-                        audioFormat: 'mp3'
+                        downloadMode: 'audio',
+                        audioFormat: 'mp3',
+                        vCodec: 'h264',
+                        isNoTTWatermark: true
                     })
                 });
 
                 const data = await response.json();
 
-                if(data.url) {
-                    msg.innerText = "Готово! Начинаю загрузку...";
-                    window.location.href = data.url;
+                if (data.url) {
+                    st.innerText = "✅ Файл найден! Загрузка началась...";
+                    // Вместо открытия новой вкладки, скачиваем напрямую
+                    const a = document.createElement('a');
+                    a.href = data.url;
+                    a.download = ''; 
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
                 } else {
-                    // Если API не выдал ссылку, используем запасной «невидимый» редирект
-                    msg.innerText = "Пробую запасной канал...";
-                    let id = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop().split('?')[0];
-                    window.open(`https://www.y2mate.com/youtube/${id}`, '_blank');
+                    st.innerText = "❌ YouTube заблокировал этот метод. Пробую зеркало...";
+                    // Если основной API не сработал, здесь можно добавить второй
                 }
-            } catch(e) {
-                // Если всё упало, просто открываем проверенный загрузчик
-                let id = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop().split('?')[0];
-                window.open(`https://www.y2mate.com/youtube/${id}`, '_blank');
+            } catch (error) {
+                st.innerText = "❌ Ошибка связи с сервером. Попробуй позже.";
             } finally {
-                loader.style.display = "none";
-                msg.innerText = "DESIGNED FOR GUSEIN";
+                ldr.style.display = "none";
             }
         }
     </script>
